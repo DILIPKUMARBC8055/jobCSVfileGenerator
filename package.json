@@ -1,0 +1,39 @@
+{
+  "name": "csvfiles",
+  "version": "1.0.0",
+  "description": "job application in which csv file is generated for every new student added",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DILIPKUMARBC8055/jobCSVfileGenerator.git"
+  },
+  "author": "DILIP KUMAR B C",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DILIPKUMARBC8055/jobCSVfileGenerator/issues"
+  },
+  "homepage": "https://github.com/DILIPKUMARBC8055/jobCSVfileGenerator#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
+    "csv-parser": "^3.0.0",
+    "csv-writer": "^1.6.0",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-ejs-layouts": "^2.5.1",
+    "json2csv": "^6.0.0-alpha.2",
+    "jsonparser": "^1.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.5.0",
+    "mongoose": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

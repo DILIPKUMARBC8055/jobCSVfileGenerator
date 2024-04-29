@@ -1,0 +1,107 @@
+<h1>Student Details</h1>
+<table>
+    <tr>
+        <th>Attribute</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Name</td>
+        <td>
+            <%= student.name %>
+        </td>
+    </tr>
+    <tr>
+        <td>Email</td>
+        <td>
+            <%= student.email %>
+        </td>
+    </tr>
+    <tr>
+        <td>Batch</td>
+        <td>
+            <%= student.batch %>
+        </td>
+    </tr>
+    <tr>
+        <td>College</td>
+        <td>
+            <%= student.studentDetails.college %>
+        </td>
+    </tr>
+    <tr>
+        <td>Status</td>
+        <td>
+            <%= student.studentDetails.status %>
+        </td>
+    </tr>
+    <tr>
+        <td>DSA Final Score</td>
+        <td>
+            <%= student.courseScores.DSAFinalScore %>
+        </td>
+    </tr>
+    <tr>
+        <td>WebD Final Score</td>
+        <td>
+            <%= student.courseScores.WebDFinalScore %>
+        </td>
+    </tr>
+    <tr>
+        <td>React Final Score</td>
+        <td>
+            <%= student.courseScores.ReactFinalScore %>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="font-size: large; font-weight: 700; align-items: center;">Interview Scheduled</td>
+    </tr>
+    <tr>
+
+        <td>
+            <table>
+                <tr>
+                    <th>Company</th>
+                    <th>Date</th>
+                </tr>
+                <% student.interviews.forEach(interview=> { %>
+                    <tr>
+
+                        <td>
+                            <%= interview.company.toString() %>
+                        </td>
+
+                        <td>
+                            <%= interview.date %>
+                        </td>
+                    </tr>
+                    <% }); %>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="font-size: large; font-weight: 700; align-items: center;">Results</td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <table>
+
+                <tr>
+                    <th>Company</th>
+                    <th>Result</th>
+                </tr>
+                <% student.results.forEach(result=> { %>
+                    <tr>
+                        <td>
+                            <%= result.companyName.toString() %>
+                        </td>
+
+                        <td>
+                            <%= result.result %>
+                        </td>
+                    </tr>
+                    <% }); %>
+            </table>
+        </td>
+    </tr>
+
+</table>

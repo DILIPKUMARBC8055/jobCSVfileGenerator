@@ -1,0 +1,54 @@
+<h1>Student List</h1>
+
+<!-- Button with Bootstrap styling -->
+<a href="/student" class="btn btn-primary">Add Student</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Batch</th>
+            <th>College</th>
+            <th>Status</th>
+            <th>DSA Final Score</th>
+            <th>WebD Final Score</th>
+            <th>React Final Score</th>
+            <th>Actions</th> <!-- Added Actions column -->
+        </tr>
+    </thead>
+    <tbody>
+        <% students.forEach(student=> { %>
+            <tr>
+                <td>
+                    <%= student.name %>
+                </td>
+                <td>
+                    <%= student.email %>
+                </td>
+                <td>
+                    <%= student.batch %>
+                </td>
+                <td>
+                    <%= student.studentDetails.college %>
+                </td>
+                <td>
+                    <%= student.studentDetails.status %>
+                </td>
+                <td>
+                    <%= student.courseScores.DSAFinalScore %>
+                </td>
+                <td>
+                    <%= student.courseScores.WebDFinalScore %>
+                </td>
+                <td>
+                    <%= student.courseScores.ReactFinalScore %>
+                </td>
+                <td><a href="/students/<%= student._id %>">View Full Details</a></td>
+                <!-- Added View Full Details button -->
+            </tr>
+            <% }); %>
+    </tbody>
+</table>
+<a href="/downloadcsv" class="btn btn-primary">Download CSV file</a>
+</body>
