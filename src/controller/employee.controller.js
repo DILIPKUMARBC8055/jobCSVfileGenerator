@@ -1,3 +1,4 @@
+// Import necessary modules and dependencies
 import ApplicationError from "../../errorHandling/customError.error.js";
 import path from "path";
 import Employee from "../model/employee.schema.js";
@@ -7,9 +8,10 @@ import Company from "../model/company.schema.js";
 import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
 import writeStudentsToCSV from "../middleware/csvfile.middleware.js";
-import CreateCSVFile from "../middleware/json2csv.middleware.js";
-import generateCSV from "../middleware/json2csv.middleware.js";
+
+// Define the EmployeeController class
 export default class EmployeeController {
+  // Render home page
   home(req, res) {
     try {
       res.status(200).render("home", { email: req.email });
@@ -18,6 +20,7 @@ export default class EmployeeController {
     }
   }
 
+  // Render login page
   login(req, res) {
     try {
       res.status(200).render("login", { email: req.email, errors: null });
@@ -25,6 +28,8 @@ export default class EmployeeController {
       throw new ApplicationError(error, 500);
     }
   }
+
+  // Render employee homepage
   empHomepage(req, res) {
     try {
       res.status(200).render("empHome", { email: req.email });
@@ -32,6 +37,8 @@ export default class EmployeeController {
       throw new ApplicationError(error, 500);
     }
   }
+
+  // Render sign up page
   signUp(req, res) {
     try {
       res.status(200).render("signup", { email: req.email });
@@ -39,16 +46,15 @@ export default class EmployeeController {
       throw new ApplicationError(error, 500);
     }
   }
+
+  // Fetch student by ID and render their details
   async getStudentById(req, res) {
     try {
       const id = req.params.id;
       if (!mongoose.Types.ObjectId.isValid(id)) {
-        // Handle the case where the id is not valid, perhaps by sending an error response
         return res.status(400).send("Invalid student ID");
       }
       const student = await Student.findById(id);
-      console.log(student);
-
       res
         .status(200)
         .render("singleStudent", { email: req.email, student: student });
@@ -56,10 +62,11 @@ export default class EmployeeController {
       throw new ApplicationError(error, 500);
     }
   }
+
+  // Render student form with company options
   async studentform(req, res) {
     try {
       const company = await Company.find();
-
       res
         .status(200)
         .render("studentform", { email: req.email, companies: company });
@@ -67,10 +74,11 @@ export default class EmployeeController {
       throw new ApplicationError(error, 500);
     }
   }
+
+  // Render list of companies
   async companyList(req, res) {
     try {
       const company = await Company.find();
-
       res
         .status(200)
         .render("listCompany", { email: req.email, companies: company });
@@ -78,6 +86,8 @@ export default class EmployeeController {
       throw new ApplicationError(error, 500);
     }
   }
+
+  // Render page to add a new company
   getAddCompany(req, res) {
     try {
       res.status(200).render("addCompany", { email: req.email });
@@ -85,6 +95,8 @@ export default class EmployeeController {
       throw new ApplicationError(error, 500);
     }
   }
+
+  // Add a new company to the database
   async addcompany(req, res) {
     try {
       const { name, industry } = req.body;
@@ -95,6 +107,8 @@ export default class EmployeeController {
       throw new ApplicationError(error, 500);
     }
   }
+
+  // Logout and redirect to home page
   logout(req, res) {
     try {
       res.clearCookie("token");
@@ -103,10 +117,11 @@ export default class EmployeeController {
       throw new ApplicationError(error, 500);
     }
   }
+
+  // Render list of students
   async studentList(req, res) {
     try {
       const students = await Student.find();
-
       res
         .status(200)
         .render("studentlist", { email: req.email, students: students });
@@ -114,22 +129,24 @@ export default class EmployeeController {
       throw new ApplicationError(error, 500);
     }
   }
+
+  // Process sign up form and create new employee
   async postSignUp(req, res) {
     try {
       const { username, password, email, confirmPassword } = req.body;
-
       const employee = new Employee({
         username: username,
         email: email,
         password: password,
       });
       await employee.save();
-      console.log("user created");
       return res.render("login", { email: req.email, errors: null });
     } catch (error) {
       throw new ApplicationError(error, 500);
     }
   }
+
+  // Process login form and authenticate employee
   async postLogin(req, res) {
     try {
       const { password, email } = req.body;
@@ -137,7 +154,7 @@ export default class EmployeeController {
       if (!employee) {
         return res.render("login", {
           email: req.email,
-          errors: "email not foud",
+          errors: "email not found",
         });
       }
       const result = await employee.matchPassword(password);
@@ -149,11 +166,10 @@ export default class EmployeeController {
         );
         res.cookie("token", token);
         res.redirect("/emphome");
-      }
-      {
+      } else {
         return res.render("login", {
           email: req.email,
-          errors: "Invalid credentails",
+          errors: "Invalid credentials",
         });
       }
     } catch (error) {
@@ -161,6 +177,7 @@ export default class EmployeeController {
     }
   }
 
+  // Process student form and create new student
   async postStudentform(req, res) {
     const {
       name,
@@ -180,62 +197,39 @@ export default class EmployeeController {
     } = req.body;
     let results = [];
     let interviews;
-    console.log(req.body);
     if (attendedInterview == "on") {
       for (let index = 0; index < company.length; index++) {
-        results.push({
-          companyName: company[index],
-          result: result[index],
-        });
+        results.push({ companyName: company[index], result: result[index] });
       }
     }
     if (scheduleInterview == "on") {
       interviews = { company: interviewCompany, date: new Date(interviewDate) };
     }
-
-    // Create a new student instance
     const newStudent = new Student({
       name,
       email,
       batch,
-      studentDetails: {
-        college,
-        status,
-      },
-      courseScores: {
-        DSAFinalScore,
-        WebDFinalScore,
-        ReactFinalScore,
-      },
+      studentDetails: { college, status },
+      courseScores: { DSAFinalScore, WebDFinalScore, ReactFinalScore },
       interviews,
       results,
     });
-
-    // Save the student to the database
     await newStudent.save();
-
     return res.redirect("/studentlist");
   }
-  catch(error) {
-    throw new ApplicationError(error, 500);
-  }
 
+  // Download CSV file containing student data
   async downloadCSV(req, res) {
     try {
       const students = await Student.aggregate([
         { $unwind: "$results" },
         { $unwind: "$interviews" },
       ]);
-      // const students = await Student.find();
-      console.log(students);
       const result = await writeStudentsToCSV(students);
-      // generateCSV(students);
       const paths = path.join(path.resolve(), "students.csv");
       const file = "students.csv";
       res.attachment(file);
-      console.log("the file is downloaded");
       res.sendFile(paths);
-      // res.redirect("/emphome");
     } catch (error) {
       throw new ApplicationError(error, 500);
     }
