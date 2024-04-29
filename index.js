@@ -45,6 +45,6 @@ server.use((err, req, res, next) => {
 
 // Start the server and connect to the database
 server.listen(process.env.PORT, () => {
-  console.log("The server is listening at port: 8080");
+  console.log("The server is listening at port: " + process.env.PORT);
   connectToDB();
 });
