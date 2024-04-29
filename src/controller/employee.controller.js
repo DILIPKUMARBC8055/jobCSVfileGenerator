@@ -67,9 +67,11 @@ export default class EmployeeController {
   async studentform(req, res) {
     try {
       const company = await Company.find();
-      res
-        .status(200)
-        .render("studentform", { email: req.email, companies: company });
+      res.status(200).render("studentform", {
+        email: req.email,
+        error: null,
+        companies: company,
+      });
     } catch (error) {
       throw new ApplicationError(error, 500);
     }
@@ -179,43 +181,55 @@ export default class EmployeeController {
 
   // Process student form and create new student
   async postStudentform(req, res) {
-    const {
-      name,
-      email,
-      batch,
-      college,
-      status,
-      DSAFinalScore,
-      WebDFinalScore,
-      ReactFinalScore,
-      attendedInterview,
-      company,
-      result,
-      scheduleInterview,
-      interviewCompany,
-      interviewDate,
-    } = req.body;
-    let results = [];
-    let interviews;
-    if (attendedInterview == "on") {
-      for (let index = 0; index < company.length; index++) {
-        results.push({ companyName: company[index], result: result[index] });
+    try {
+      const {
+        name,
+        email,
+        batch,
+        college,
+        status,
+        DSAFinalScore,
+        WebDFinalScore,
+        ReactFinalScore,
+        attendedInterview,
+        company,
+        result,
+        scheduleInterview,
+        interviewCompany,
+        interviewDate,
+      } = req.body;
+      let results = [];
+      let interviews;
+      if (attendedInterview == "on") {
+        for (let index = 0; index < company.length; index++) {
+          results.push({ companyName: company[index], result: result[index] });
+        }
       }
+      if (scheduleInterview == "on") {
+        interviews = {
+          company: interviewCompany,
+          date: new Date(interviewDate),
+        };
+      }
+      const newStudent = new Student({
+        name,
+        email,
+        batch,
+        studentDetails: { college, status },
+        courseScores: { DSAFinalScore, WebDFinalScore, ReactFinalScore },
+        interviews,
+        results,
+      });
+      await newStudent.save();
+      return res.redirect("/studentlist");
+    } catch (err) {
+      console.log(err);
+      return res.status(200).render("studentform", {
+        email: req.email,
+        error: err.message,
+        companies: company,
+      });
     }
-    if (scheduleInterview == "on") {
-      interviews = { company: interviewCompany, date: new Date(interviewDate) };
-    }
-    const newStudent = new Student({
-      name,
-      email,
-      batch,
-      studentDetails: { college, status },
-      courseScores: { DSAFinalScore, WebDFinalScore, ReactFinalScore },
-      interviews,
-      results,
-    });
-    await newStudent.save();
-    return res.redirect("/studentlist");
   }
 
   // Download CSV file containing student data
