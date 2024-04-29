@@ -69,7 +69,7 @@ export default class EmployeeController {
       const company = await Company.find();
       res.status(200).render("studentform", {
         email: req.email,
-        error: null,
+        errors: null,
         companies: company,
       });
     } catch (error) {
@@ -226,7 +226,7 @@ export default class EmployeeController {
       console.log(err);
       return res.status(200).render("studentform", {
         email: req.email,
-        error: err.message,
+        errors: err.message,
         companies: company,
       });
     }
