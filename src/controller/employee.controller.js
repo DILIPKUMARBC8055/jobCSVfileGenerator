@@ -41,7 +41,7 @@ export default class EmployeeController {
   // Render sign up page
   signUp(req, res) {
     try {
-      res.status(200).render("signup", { email: req.email });
+      res.status(200).render("signup", { email: req.email, errors: null });
     } catch (error) {
       throw new ApplicationError(error, 500);
     }
@@ -136,9 +136,30 @@ export default class EmployeeController {
   async postSignUp(req, res) {
     try {
       const { username, password, email, confirmPassword } = req.body;
+      if (!username || !password || !email || !confirmPassword) {
+        return res.status(200).render("signup", {
+          email: req.email,
+          errors: "Enter all the fields that is required",
+        });
+      }
+      if (password !== confirmPassword) {
+        return res.status(200).render("signup", {
+          email: req.email,
+          errors: "password and confirm password didn't match",
+        });
+      }
+      const userExist = await Employee.findOne({
+        email: email.toString().toLowerCase(),
+      });
+      if (userExist) {
+        return res.status(200).render("signup", {
+          email: req.email,
+          errors: "user with email id already exit",
+        });
+      }
       const employee = new Employee({
         username: username,
-        email: email,
+        email: email.toString().toLowerCase(),
         password: password,
       });
       await employee.save();
@@ -152,7 +173,9 @@ export default class EmployeeController {
   async postLogin(req, res) {
     try {
       const { password, email } = req.body;
-      const employee = await Employee.findOne({ email: email });
+      const employee = await Employee.findOne({
+        email: email.toString().toLowerCase(),
+      });
       if (!employee) {
         return res.render("login", {
           email: req.email,
